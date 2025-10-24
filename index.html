@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruleta de la Quiniela</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            transition: background-color 0.3s;
+        }
+        .dark {
+            background-color: #181818;
+            color: white;
+        }
+        #wheelCanvas {
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+        .dark .shimmer {
+            background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+            background-size: 1000px 100%;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#181818] min-h-screen p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-2">🎰 Ruleta de la Quiniela</h1>
+            <p class="text-gray-600 dark:text-gray-400">Girá la ruleta y descubrí tu número de la suerte</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 md:p-8 shadow-lg">
+            <!-- Wheel Container -->
+            <div class="relative flex justify-center items-center mb-6">
+                <!-- Pointer Arrow -->
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 z-10">
+                    <div class="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[30px] border-t-red-500"></div>
+                </div>
+
+                <canvas id="wheelCanvas" width="400" height="400"></canvas>
+            </div>
+
+            <!-- Spin Button -->
+            <button
+                id="spinBtn"
+                class="w-full px-6 py-4 bg-[#5D5CDE] text-white rounded-lg font-bold text-xl hover:bg-[#4D4CBE] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed mb-4"
+            >
+                🎲 GIRAR RULETA
+            </button>
+
+            <!-- Result Display -->
+            <div id="resultDiv" class="hidden text-center p-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl mb-4">
+                <p class="text-white text-lg font-medium mb-2">🎉 Salió el número:</p>
+                <p id="resultNumber" class="text-white text-6xl font-bold mb-2"></p>
+                <p id="resultMeaning" class="text-white text-2xl font-bold"></p>
+            </div>
+
+            <!-- Info Section -->
+            <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border-2 border-blue-200 dark:border-blue-700">
+                <p class="text-center text-sm text-blue-800 dark:text-blue-300">
+                    💡 <strong>La Quiniela Argentina</strong> tiene 100 números (00-99), cada uno con su significado tradicional
+                </p>
+            </div>
+        </div>
+
+        <!-- Numbers Grid -->
+        <div class="mt-8 bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">📖 Todos los Números</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-96 overflow-y-auto">
+                <div id="numbersGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode setup
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Quiniela numbers and meanings
+        const quiniela = {
+            "00": "Huevos",
+            "01": "Agua",
+            "02": "Niño",
+            "03": "San Cono",
+            "04": "La cama",
+            "05": "Gato",
+            "06": "Perro",
+            "07": "Revólver",
+            "08": "Incendio",
+            "09": "Arroyo",
+            "10": "La leche",
+            "11": "Palito",
+            "12": "Soldado",
+            "13": "La yeta",
+            "14": "Borracho",
+            "15": "Niña bonita",
+            "16": "Anillo",
+            "17": "Desgracia",
+            "18": "Sangre",
+            "19": "Pescado",
+            "20": "La fiesta",
+            "21": "La mujer",
+            "22": "El loco",
+            "23": "Mariposa",
+            "24": "Caballo",
+            "25": "Gallina",
+            "26": "La misa",
+            "27": "El peine",
+            "28": "El cerro",
+            "29": "San Pedro",
+            "30": "Santa Rosa",
+            "31": "La luz",
+            "32": "Dinero",
+            "33": "Cristo",
+            "34": "Cabeza",
+            "35": "Pajarito",
+            "36": "Manteca",
+            "37": "Dentista",
+            "38": "Aceite",
+            "39": "Lluvia",
+            "40": "Cura",
+            "41": "Cucha",
+            "42": "Zapatilla",
+            "43": "Balcón",
+            "44": "La cárcel",
+            "45": "El vino",
+            "46": "Tomates",
+            "47": "Muerto",
+            "48": "Muerto habla",
+            "49": "La carne",
+            "50": "El pan",
+            "51": "Serrucho",
+            "52": "Madre",
+            "53": "El barco",
+            "54": "La vaca",
+            "55": "Los gallegos",
+            "56": "La caída",
+            "57": "Jorobado",
+            "58": "Ahogado",
+            "59": "Planta",
+            "60": "Virgen",
+            "61": "Escopete",
+            "62": "Inundación",
+            "63": "Casamiento",
+            "64": "Llanto",
+            "65": "Cazador",
+            "66": "Lombrices",
+            "67": "Víbora",
+            "68": "Sobrinos",
+            "69": "Vicios",
+            "70": "Muerto sueños",
+            "71": "Excrementos",
+            "72": "Sorpresa",
+            "73": "Hospital",
+            "74": "Negros",
+            "75": "Payaso",
+            "76": "Llamas",
+            "77": "Las piernas",
+            "78": "Ramera",
+            "79": "Ladrón",
+            "80": "La bocha",
+            "81": "Flores",
+            "82": "Pelea",
+            "83": "Mal tiempo",
+            "84": "Iglesia",
+            "85": "Linterna",
+            "86": "Humo",
+            "87": "Piojos",
+            "88": "El Papa",
+            "89": "La rata",
+            "90": "El miedo",
+            "91": "Excusado",
+            "92": "Médico",
+            "93": "Enamorado",
+            "94": "Cementerio",
+            "95": "Anteojos",
+            "96": "Marido",
+            "97": "La mesa",
+            "98": "Lavandera",
+            "99": "Hermanos"
+        };
+
+        // App state
+        let isSpinning = false;
+
+        // DOM elements
+        const spinBtn = document.getElementById('spinBtn');
+        const resultDiv = document.getElementById('resultDiv');
+        const resultNumber = document.getElementById('resultNumber');
+        const resultMeaning = document.getElementById('resultMeaning');
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const numbersGrid = document.getElementById('numbersGrid');
+
+        // Generate colors for wheel segments
+        function generateColors(count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                const hue = (i * 360 / count) % 360;
+                colors.push(`hsl(${hue}, 70%, 60%)`);
+            }
+            return colors;
+        }
+
+        const colors = generateColors(100);
+
+        // Render numbers grid
+        function renderNumbersGrid() {
+            const html = Object.entries(quiniela).map(([num, meaning]) => `
+                <div class="bg-white dark:bg-gray-700 p-2 rounded text-center">
+                    <div class="font-bold text-[#5D5CDE] dark:text-[#7D7DFF]">${num}</div>
+                    <div class="text-xs text-gray-600 dark:text-gray-300">${meaning}</div>
+                </div>
+            `).join('');
+            numbersGrid.innerHTML = html;
+        }
+
+        // Draw wheel with segments
+        function drawWheel(rotation = 0) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 180;
+            const numbers = Object.keys(quiniela);
+            const sliceAngle = (2 * Math.PI) / numbers.length;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw segments
+            numbers.forEach((num, index) => {
+                const startAngle = rotation + index * sliceAngle;
+                const endAngle = startAngle + sliceAngle;
+
+                // Draw segment
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[index];
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Draw number (only for larger segments or every nth number)
+                if (numbers.length <= 50 || index % 2 === 0) {
+                    ctx.save();
+                    ctx.translate(centerX, centerY);
+                    ctx.rotate(startAngle + sliceAngle / 2);
+                    ctx.textAlign = 'right';
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 10px sans-serif';
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                    ctx.shadowBlur = 2;
+                    ctx.fillText(num, radius - 10, 3);
+                    ctx.restore();
+                }
+            });
+
+            // Draw center circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 25, 0, 2 * Math.PI);
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+            ctx.strokeStyle = '#5D5CDE';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Draw center text
+            ctx.fillStyle = '#5D5CDE';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('QUINIELA', centerX, centerY);
+        }
+
+        // Spin wheel
+        function spinWheel() {
+            if (isSpinning) return;
+
+            isSpinning = true;
+            spinBtn.disabled = true;
+            resultDiv.classList.add('hidden');
+
+            const numbers = Object.keys(quiniela);
+            const sliceAngle = (2 * Math.PI) / numbers.length;
+
+            // Random number of full rotations + random position
+            const randomSpins = 5 + Math.random() * 3; // 5-8 full rotations
+            const totalRotation = randomSpins * 2 * Math.PI;
+            const duration = 5000; // 5 seconds
+            const startTime = Date.now();
+
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function for smooth deceleration
+                const easeOut = 1 - Math.pow(1 - progress, 4);
+                const currentRotation = totalRotation * easeOut;
+
+                drawWheel(currentRotation);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Calculate winning number
+                    const normalizedRotation = (currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+                    const pointerAngle = Math.PI / 2; // Pointer at top (90 degrees)
+                    const winningAngle = (pointerAngle - normalizedRotation + 2 * Math.PI) % (2 * Math.PI);
+                    const winningIndex = Math.floor(winningAngle / sliceAngle);
+                    const winningNumber = numbers[winningIndex];
+                    const winningMeaning = quiniela[winningNumber];
+
+                    // Show result
+                    setTimeout(() => {
+                        resultNumber.textContent = winningNumber;
+                        resultMeaning.textContent = winningMeaning;
+                        resultDiv.classList.remove('hidden');
+                        isSpinning = false;
+                        spinBtn.disabled = false;
+                    }, 500);
+                }
+            }
+
+            animate();
+        }
+
+        // Event listeners
+        spinBtn.addEventListener('click', spinWheel);
+
+        // Initialize
+        renderNumbersGrid();
+        drawWheel();
+    </script>
+</body>
+</html>
