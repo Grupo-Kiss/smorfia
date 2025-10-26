@@ -7,6 +7,11 @@ export const colors = {
   lightText: '#FFFFFF',
   border: '#A8A8A8',
   accent: '#66B2FF',
+  // Paleta extendida de la web
+  verdeLima: '#A4D65E',
+  naranjaCalido: '#FF7F50',
+  rojoCoral: '#FF6F61',
+  amarilloSuave: '#FFD700',
 };
 
 export const typography = {

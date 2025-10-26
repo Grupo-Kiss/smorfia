@@ -1,0 +1,147 @@
+
+        :root {
+            --primary-color: #003366;
+            --background-color: #F0F0F0;
+            --text-color: #333333;
+            --light-text-color: #FFFFFF;
+            --accent-color: #66B2FF;
+            --secondary-color: #FFC107;
+            --border-color: #A8A8A8;
+        }
+
+        body {
+            transition: background-color 0.3s;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 1rem;
+        }
+
+        .dark {
+            --primary-color: #66B2FF;
+            --background-color: #181818;
+            --text-color: #FFFFFF;
+            --light-text-color: #FFFFFF;
+            --accent-color: #003366;
+            --secondary-color: #FFC107;
+            --border-color: #A8A8A8;
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            #numbersGrid {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            }
+        }
+.main-content {
+            background-color: var(--background-color);
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .wheel-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .pointer {
+            display: none; /* Oculta el triangulo */
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(-1rem);
+            z-index: 10;
+        }
+.button-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+.result-container {
+            text-align: center;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background-color: var(--accent-color);
+        }
+
+        .result-text {
+            color: var(--light-text-color);
+            font-size: 1.125rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-number {
+            color: var(--light-text-color);
+            font-size: 3.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-meaning {
+            color: var(--light-text-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+.info-section {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border: 2px solid var(--primary-color);
+        }
+
+        .numbers-grid-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: var(--background-color);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .random-numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columnas para simetria en movil */
+            gap: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .random-numbers-grid {
+                grid-template-columns: repeat(4, 1fr); /* 4 columnas para pantallas mas grandes */
+            }
+        }
+        .random-number-item {
+            background-color: var(--primary-color);
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid var(--accent-color);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .grid-item-meaning {
+            word-break: break-word;
+        }
+    

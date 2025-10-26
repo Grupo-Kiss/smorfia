@@ -6,7 +6,7 @@ Español
 
 ## Objetivo
 
-App mobile de Lotería Argentina.
+App mobile de Lotería Argentina y app web simple con index.html - Ambas con las mismas fucnionalidades.
 
 # Smorfia
 
