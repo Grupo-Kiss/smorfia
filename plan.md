@@ -3,26 +3,26 @@
 ## Fase 1: Configuración y Estructura del Proyecto
 - [x] Definir objetivo y tecnología.
 - [x] Crear archivos iniciales (`README.md`, `.gitignore`, `plan.md`).
-- [ ] Inicializar proyecto React Native con TypeScript.
-- [ ] Configurar ESLint, Prettier y otras herramientas de calidad de código.
-- [ ] Estructurar carpetas del proyecto (screens, components, assets, services).
+- [x] Inicializar proyecto React Native con TypeScript.
+- [x] Configurar ESLint, Prettier y otras herramientas de calidad de código.
+- [x] Estructurar carpetas del proyecto (screens, components, assets, services).
 
 ## Fase 2: Diseño de UI/UX
-- [ ] Diseñar wireframes y mockups de las pantallas principales:
+- [x] Diseñar wireframes y mockups de las pantallas principales:
     - Pantalla de Inicio (con buscador de números/palabras).
     - Pantalla de Lista de Números (del 00 al 99).
     - Pantalla de Detalle del Número (significado, imagen/sueño asociado).
-- [ ] Crear una paleta de colores y guía de estilos simple.
+- [x] Crear una paleta de colores y guía de estilos simple.
 
 ## Fase 3: Desarrollo del Núcleo y Lógica
-- [ ] Crear un servicio o archivo JSON con los datos de la Smorfia (número y su significado).
-- [ ] Implementar la lógica de búsqueda (por número y por texto).
+- [x] Crear un servicio o archivo JSON con los datos de la Smorfia (número y su significado).
+- [x] Implementar la lógica de búsqueda (por número y por texto).
 
 ## Fase 4: Desarrollo de las Vistas (Screens)
-- [ ] Desarrollar el componente de la pantalla de Inicio.
-- [ ] Desarrollar el componente de la pantalla de Lista de Números.
-- [ ] Desarrollar el componente de la pantalla de Detalle.
-- [ ] Implementar la navegación entre pantallas (React Navigation).
+- [x] Desarrollar el componente de la pantalla de Inicio.
+- [x] Desarrollar el componente de la pantalla de Lista de Números.
+- [x] Desarrollar el componente de la pantalla de Detalle.
+- [x] Implementar la navegación entre pantallas (React Navigation).
 
 ## Fase 5: Pruebas y Depuración
 - [ ] Realizar pruebas manuales en un emulador de Android.

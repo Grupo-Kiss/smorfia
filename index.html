@@ -3,87 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruleta de la Quiniela</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <title>SMORFIA ARGENTINA</title>
     <style>
+        :root {
+            --primary-color: #003366;
+            --background-color: #F0F0F0;
+            --text-color: #333333;
+            --light-text-color: #FFFFFF;
+            --accent-color: #66B2FF;
+            --secondary-color: #FFC107;
+            --border-color: #A8A8A8;
+        }
+
         body {
             transition: background-color 0.3s;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 1rem;
         }
+
         .dark {
-            background-color: #181818;
-            color: white;
+            --primary-color: #66B2FF;
+            --background-color: #181818;
+            --text-color: #FFFFFF;
+            --light-text-color: #FFFFFF;
+            --accent-color: #003366;
+            --secondary-color: #FFC107;
+            --border-color: #A8A8A8;
         }
+
         #wheelCanvas {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
             filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
         }
-        @keyframes shimmer {
-            0% {
-                background-position: -1000px 0;
+
+        @media (max-width: 640px) {
+            body {
+                padding: 0.5rem;
             }
-            100% {
-                background-position: 1000px 0;
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            #numbersGrid {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
             }
         }
-        .shimmer {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 1000px 100%;
-            animation: shimmer 2s infinite;
+.main-content {
+            background-color: var(--background-color);
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        .dark .shimmer {
-            background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
-            background-size: 1000px 100%;
+
+        .wheel-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .pointer {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(-1rem);
+            z-index: 10;
+        }
+.button-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+.result-container {
+            text-align: center;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background-color: var(--accent-color);
+        }
+
+        .result-text {
+            color: var(--light-text-color);
+            font-size: 1.125rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-number {
+            color: var(--light-text-color);
+            font-size: 3.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-meaning {
+            color: var(--light-text-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+.info-section {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border: 2px solid var(--primary-color);
+        }
+
+        .numbers-grid-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: var(--background-color);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+.random-numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .random-number-item {
+            background-color: var(--primary-color);
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid var(--accent-color);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--text-color);
         }
     </style>
 </head>
-<body class="bg-white dark:bg-[#181818] min-h-screen p-4 md:p-8">
-    <div class="max-w-4xl mx-auto">
+<body>
+    <div style="max-width: 48rem; margin-left: auto; margin-right: auto;">
         <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-2">🎰 Ruleta de la Quiniela</h1>
-            <p class="text-gray-600 dark:text-gray-400">Girá la ruleta y descubrí tu número de la suerte</p>
-        </div>
+        
 
         <!-- Main Content -->
-        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 md:p-8 shadow-lg">
+        <div class="main-content">
             <!-- Wheel Container -->
-            <div class="relative flex justify-center items-center mb-6">
+            <div class="wheel-container">
                 <!-- Pointer Arrow -->
-                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 z-10">
-                    <div class="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[30px] border-t-red-500"></div>
+                <div class="pointer">
+                    <div style="width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid var(--primary-color);"></div>
                 </div>
 
                 <canvas id="wheelCanvas" width="400" height="400"></canvas>
             </div>
 
             <!-- Spin Button -->
-            <button
-                id="spinBtn"
-                class="w-full px-6 py-4 bg-[#5D5CDE] text-white rounded-lg font-bold text-xl hover:bg-[#4D4CBE] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed mb-4"
-            >
-                🎲 GIRAR RULETA
-            </button>
-
-            <!-- Result Display -->
-            <div id="resultDiv" class="hidden text-center p-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl mb-4">
-                <p class="text-white text-lg font-medium mb-2">🎉 Salió el número:</p>
-                <p id="resultNumber" class="text-white text-6xl font-bold mb-2"></p>
-                <p id="resultMeaning" class="text-white text-2xl font-bold"></p>
+            <div class="button-container">
+                <button
+                    id="spinBtn"
+                    style="flex-grow: 1; padding: 1rem 1.5rem; background-color: var(--primary-color); color: var(--light-text-color); font-weight: 700; font-size: 1.25rem; transition: background-color 0.3s; border: none;"
+                >
+                    GIRAR RULETA
+                </button>
+                <button
+                    id="dame6Btn"
+                    style="flex-grow: 1; padding: 1rem 1.5rem; background-color: var(--secondary-color); color: var(--text-color); font-weight: 700; font-size: 1.25rem; transition: background-color 0.3s; border: none;"
+                >
+                    DAME 6
+                </button>
+                <button
+                    id="dame8Btn"
+                    style="flex-grow: 1; padding: 1rem 1.5rem; background-color: var(--secondary-color); color: var(--text-color); font-weight: 700; font-size: 1.25rem; transition: background-color 0.3s; border: none;"
+                >
+                    DAME 8
+                </button>
             </div>
 
+            <!-- Result Display -->
+            <div id="resultDiv" class="result-container hidden">
+                <p class="result-text">Salió el:</p>
+                <p id="resultNumber" class="result-number"></p>
+                <p id="resultMeaning" class="result-meaning"></p>
+            </div>
+
+            <div id="randomNumbersDiv" class="result-container hidden"></div>
+
             <!-- Info Section -->
-            <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border-2 border-blue-200 dark:border-blue-700">
-                <p class="text-center text-sm text-blue-800 dark:text-blue-300">
-                    💡 <strong>La Quiniela Argentina</strong> tiene 100 números (00-99), cada uno con su significado tradicional
-                </p>
+            <div class="info-section" style="background-color: rgba(0, 51, 102, 0.1); border-color: var(--primary-color);">
+                
             </div>
         </div>
 
         <!-- Numbers Grid -->
-        <div class="mt-8 bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 text-center">📖 Todos los Números</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-96 overflow-y-auto">
-                <div id="numbersGrid"></div>
-            </div>
+        <div class="numbers-grid-container">
+            <h2>Todos los Números</h2>
+            <div id="numbersGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); grid-auto-flow: dense; gap: 0.5rem; max-height: 96rem; overflow-y: auto;"></div>
         </div>
     </div>
 
@@ -209,19 +328,22 @@
 
         // DOM elements
         const spinBtn = document.getElementById('spinBtn');
+        const dame6Btn = document.getElementById('dame6Btn');
+        const dame8Btn = document.getElementById('dame8Btn');
         const resultDiv = document.getElementById('resultDiv');
         const resultNumber = document.getElementById('resultNumber');
         const resultMeaning = document.getElementById('resultMeaning');
+        const randomNumbersDiv = document.getElementById('randomNumbersDiv');
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
         const numbersGrid = document.getElementById('numbersGrid');
 
         // Generate colors for wheel segments
         function generateColors(count) {
+            const baseColors = ['#A4D65E', '#FF7F50', '#FF6F61', '#FFD700'];
             const colors = [];
             for (let i = 0; i < count; i++) {
-                const hue = (i * 360 / count) % 360;
-                colors.push(`hsl(${hue}, 70%, 60%)`);
+                colors.push(baseColors[i % baseColors.length]);
             }
             return colors;
         }
@@ -230,12 +352,15 @@
 
         // Render numbers grid
         function renderNumbersGrid() {
-            const html = Object.entries(quiniela).map(([num, meaning]) => `
-                <div class="bg-white dark:bg-gray-700 p-2 rounded text-center">
-                    <div class="font-bold text-[#5D5CDE] dark:text-[#7D7DFF]">${num}</div>
-                    <div class="text-xs text-gray-600 dark:text-gray-300">${meaning}</div>
+            const numbers = Object.keys(quiniela).sort();
+            const html = numbers.map(num => {
+                const size = Math.random() > 0.8 ? '2' : '1';
+                return `
+                <div style="background-color: var(--background-color); padding: 0.5rem; text-align: center; border: 2px solid var(--primary-color); grid-column: span ${size}; grid-row: span ${size};">
+                    <div style="font-weight: 700; color: var(--primary-color);">${num}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-color);">${quiniela[num]}</div>
                 </div>
-            `).join('');
+            `}).join('');
             numbersGrid.innerHTML = html;
         }
 
@@ -285,16 +410,16 @@
             ctx.arc(centerX, centerY, 25, 0, 2 * Math.PI);
             ctx.fillStyle = '#fff';
             ctx.fill();
-            ctx.strokeStyle = '#5D5CDE';
+            ctx.strokeStyle = 'var(--primary-color)';
             ctx.lineWidth = 4;
             ctx.stroke();
 
             // Draw center text
-            ctx.fillStyle = '#5D5CDE';
+            ctx.fillStyle = 'var(--primary-color)';
             ctx.font = 'bold 12px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('QUINIELA', centerX, centerY);
+            ctx.fillText('🍀', centerX, centerY);
         }
 
         // Spin wheel
@@ -351,6 +476,44 @@
 
         // Event listeners
         spinBtn.addEventListener('click', spinWheel);
+        dame6Btn.addEventListener('click', () => showRandomNumbers(6));
+        dame8Btn.addEventListener('click', () => showRandomNumbers(8));
+
+        function getRandomNumbers(count) {
+            const numbers = Object.keys(quiniela);
+            const shuffled = numbers.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
+        function showRandomNumbers(count) {
+            const randomNumbers = getRandomNumbers(count);
+            const numbersHtml = randomNumbers.map(num => `
+                <div class="random-number-item">
+                    <p class="result-number">${num}</p>
+                    <p class="result-meaning">${quiniela[num]}</p>
+                </div>
+            `).join('');
+
+            const shareButtonHtml = `<button id="shareBtn" style="margin-top: 1rem; padding: 1rem 1.5rem; background-color: var(--primary-color); color: var(--light-text-color); font-weight: 700; font-size: 1.25rem; transition: background-color 0.3s; border: none;">COMPARTIR</button>`;
+
+            randomNumbersDiv.innerHTML = `<div class="random-numbers-grid">${numbersHtml}</div>${shareButtonHtml}`;
+            randomNumbersDiv.classList.remove('hidden');
+            resultDiv.classList.add('hidden');
+
+            document.getElementById('shareBtn').addEventListener('click', () => {
+                const shareText = randomNumbers.map(num => `${num}: ${quiniela[num]}`).join('\n');
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Mis números de la suerte',
+                        text: `Mis números de la suerte:\n${shareText}`,
+                    })
+                    .catch(console.error);
+                } else {
+                    // Fallback for browsers that don't support Web Share API
+                    alert(`Copia estos números:\n\n${shareText}`);
+                }
+            });
+        }
 
         // Initialize
         renderNumbersGrid();
